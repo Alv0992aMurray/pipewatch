@@ -1,0 +1,40 @@
+# pipewatch alert rules configuration
+# Supported metrics : success_rate, throughput, error_count
+# Supported operators: lt, gt, lte, gte
+# Supported severities: info, warning, critical
+
+rules:
+  - name: low_success_rate
+    metric: success_rate
+    threshold: 0.95
+    operator: lt
+    severity: critical
+    message: "Pipeline success rate dropped below 95%"
+
+  - name: very_low_success_rate
+    metric: success_rate
+    threshold: 0.80
+    operator: lt
+    severity: critical
+    message: "Pipeline success rate critically low (< 80%)"
+
+  - name: low_throughput
+    metric: throughput
+    threshold: 10.0
+    operator: lt
+    severity: warning
+    message: "Pipeline throughput is below 10 rows/sec"
+
+  - name: high_error_count
+    metric: error_count
+    threshold: 50
+    operator: gt
+    severity: warning
+    message: "Pipeline has more than 50 errors"
+
+  - name: critical_error_count
+    metric: error_count
+    threshold: 200
+    operator: gt
+    severity: critical
+    message: "Pipeline error count exceeds 200 — immediate attention required"

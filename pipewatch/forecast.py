@@ -28,6 +28,15 @@ class ForecastResult:
             "message": self.message,
         }
 
+    @property
+    def is_concerning(self) -> bool:
+        """Return True if the predicted rate falls below 0.8 or the trend is sharply declining."""
+        if self.predicted_rate is not None and self.predicted_rate < 0.8:
+            return True
+        if self.slope is not None and self.slope < -0.05:
+            return True
+        return False
+
 
 def _linear_regression(xs: List[float], ys: List[float]):
     """Return (slope, intercept) for a simple OLS fit."""

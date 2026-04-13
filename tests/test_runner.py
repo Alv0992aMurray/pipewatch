@@ -86,3 +86,12 @@ def test_run_checks_empty_rules(healthy_metric):
     result = run_checks(healthy_metric, [])
     assert not result.has_alerts
     assert result.report["alert_count"] == 0
+
+
+def test_run_checks_warning_does_not_set_critical(failing_metric, warning_rule):
+    """A triggered WARNING-severity alert should not mark the result as critical."""
+    result = run_checks(failing_metric, [warning_rule])
+    assert result.has_alerts
+    assert not result.has_critical
+    assert len(result.alerts) == 1
+    assert result.alerts[0].rule_name == "high_errors"

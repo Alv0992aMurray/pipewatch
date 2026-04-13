@@ -48,3 +48,26 @@ class PipelineMetric:
             "timestamp": self.timestamp.isoformat(),
             "healthy": self.is_healthy(),
         }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "PipelineMetric":
+        """Deserialize a metric from a plain dictionary.
+
+        Args:
+            data: A dictionary as produced by ``to_dict``.
+
+        Returns:
+            A ``PipelineMetric`` instance populated from the given data.
+
+        Raises:
+            KeyError: If a required field is missing from *data*.
+            ValueError: If ``timestamp`` cannot be parsed as an ISO 8601 string.
+        """
+        return cls(
+            pipeline_name=data["pipeline_name"],
+            rows_processed=data["rows_processed"],
+            rows_failed=data["rows_failed"],
+            duration_seconds=data["duration_seconds"],
+            timestamp=datetime.fromisoformat(data["timestamp"]),
+            stage=data.get("stage"),
+        )

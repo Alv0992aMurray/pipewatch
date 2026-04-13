@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from pipewatch.metrics import PipelineMetric, success_rate, throughput
+from pipewatch.metrics import PipelineMetric, is_healthy, success_rate, throughput
 
 
 @dataclass
@@ -32,6 +32,13 @@ class RollupStats:
             "unhealthy_count": self.unhealthy_count,
         }
 
+    @property
+    def health_ratio(self) -> Optional[float]:
+        """Fraction of pipelines that are healthy (0.0–1.0), or None if no pipelines."""
+        if self.pipeline_count == 0:
+            return None
+        return self.healthy_count / self.pipeline_count
+
 
 def compute_rollup(metrics: List[PipelineMetric]) -> RollupStats:
     """Compute aggregate statistics across a list of pipeline metrics."""
@@ -51,7 +58,6 @@ def compute_rollup(metrics: List[PipelineMetric]) -> RollupStats:
     rates = [r for m in metrics if (r := success_rate(m)) is not None]
     throughputs = [t for m in metrics if (t := throughput(m)) is not None]
 
-    from pipewatch.metrics import is_healthy
     healthy = sum(1 for m in metrics if is_healthy(m))
 
     return RollupStats(

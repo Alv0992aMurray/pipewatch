@@ -66,3 +66,19 @@ def test_empty_file_returns_empty(write_yaml):
     path = write_yaml({})
     result = load_webhook_configs(path)
     assert result == []
+
+
+def test_load_multiple_webhooks(write_yaml):
+    """Verify that multiple webhook entries are all loaded correctly."""
+    path = write_yaml({
+        "webhooks": [
+            {"url": "http://first.com/hook", "min_severity": "warning"},
+            {"url": "http://second.com/hook", "min_severity": "critical"},
+        ]
+    })
+    configs = load_webhook_configs(path)
+    assert len(configs) == 2
+    assert configs[0].url == "http://first.com/hook"
+    assert configs[0].min_severity == AlertSeverity.WARNING
+    assert configs[1].url == "http://second.com/hook"
+    assert configs[1].min_severity == AlertSeverity.CRITICAL

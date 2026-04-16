@@ -59,6 +59,12 @@ def test_format_result_no_data():
     assert "Insufficient" in line
 
 
+def test_format_result_includes_pipeline_name():
+    r = _result(pipeline="my-pipeline")
+    line = format_forecast_result(r)
+    assert "my-pipeline" in line
+
+
 def test_format_report_empty():
     out = format_forecast_report([])
     assert "no pipelines" in out
@@ -79,3 +85,11 @@ def test_to_json_is_valid():
     assert len(parsed) == 2
     assert parsed[0]["predicted_rate"] == pytest.approx(0.87, abs=0.001)
     assert parsed[1]["predicted_rate"] is None
+
+
+def test_to_json_contains_pipeline_key():
+    """Each JSON entry should include the pipeline name for identification."""
+    results = [_result(pipeline="mypipe")]
+    raw = forecast_report_to_json(results)
+    parsed = json.loads(raw)
+    assert parsed[0]["pipeline"] == "mypipe"

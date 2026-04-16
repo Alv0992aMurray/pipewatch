@@ -12,6 +12,7 @@ def _status_icon(result: DependencyResult) -> str:
 
 
 def format_dependency_result(result: DependencyResult) -> str:
+    """Format a single DependencyResult into a human-readable string."""
     icon = _status_icon(result)
     lines = [f"{icon}  {result.message}"]
     if result.blocked_by:
@@ -22,6 +23,7 @@ def format_dependency_result(result: DependencyResult) -> str:
 
 
 def format_dependency_report(results: List[DependencyResult]) -> str:
+    """Format a list of DependencyResults into a full report string."""
     if not results:
         return "No dependency relationships configured."
 
@@ -38,4 +40,17 @@ def format_dependency_report(results: List[DependencyResult]) -> str:
 
 
 def dependency_report_to_json(results: List[DependencyResult]) -> str:
+    """Serialize a list of DependencyResults to a JSON string."""
     return json.dumps([r.to_dict() for r in results], indent=2)
+
+
+def summarize_dependency_report(results: List[DependencyResult]) -> str:
+    """Return a one-line summary of the dependency check results.
+
+    Example output:
+        "3 pipeline(s) checked: 1 blocked, 2 passing"
+    """
+    total = len(results)
+    blocked = sum(1 for r in results if r.is_blocked)
+    passing = total - blocked
+    return f"{total} pipeline(s) checked: {blocked} blocked, {passing} passing"

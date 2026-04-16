@@ -82,3 +82,19 @@ class AlertBudget:
 
     def reset(self) -> None:
         self._log.clear()
+
+    def summary(self, now: Optional[datetime] = None) -> dict:
+        """Return a snapshot of the current budget state.
+
+        Returns a dict with the pipeline name, how many alerts have been fired
+        in the current window, the configured limit, and how many remain.
+        """
+        now = now or datetime.utcnow()
+        used = self.count_in_window(now)
+        return {
+            "pipeline": self.config.pipeline,
+            "window_minutes": self.config.window_minutes,
+            "used": used,
+            "limit": self.config.max_alerts,
+            "remaining": max(0, self.config.max_alerts - used),
+        }

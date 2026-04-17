@@ -45,12 +45,12 @@ def apply_inhibition(
     alerts: List[Alert],
     rules: List[InhibitionRule],
 ) -> InhibitionResult:
-    """Suppress target alerts when a matching source alert is present."""
-    active_sources = [
-        a for a in alerts
-        for rule in rules
-        if rule.source_matches(a)
-    ]
+    """Suppress target alerts when a matching source alert is present.
+
+    An alert is inhibited if an active rule's source alert is firing and
+    the alert matches the rule's target pipeline. Source alerts themselves
+    are never inhibited by the rule that triggered them.
+    """
     active_rules = [
         rule for rule in rules
         if any(rule.source_matches(a) for a in alerts)

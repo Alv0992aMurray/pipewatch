@@ -104,17 +104,20 @@ def test_record_metric_creates_and_appends(tmp_path, healthy_metric):
 
 
 def test_record_metric_multiple_pipelines(tmp_path, healthy_metric):
-    path = str(tmp_path / "history.json")
-    other_metric = PipelineMetric(
-        pipeline_name="inventory",
+    """Recording metrics for different pipelines stores them independently."""
+    invoices_metric = PipelineMetric(
+        pipeline_name="invoices",
         rows_processed=500,
         rows_failed=5,
         error_count=1,
         duration_seconds=15.0,
     )
+    path = str(tmp_path / "history.json")
     record_metric(healthy_metric, path=path)
-    record_metric(other_metric, path=path)
+    record_metric(invoices_metric, path=path)
 
     loaded = load_history(path)
     assert "orders" in loaded
-    assert "inventory" in loaded
+    assert "invoices" in loaded
+    assert len(loaded["orders"].snapshots) == 1
+    assert len(loaded["invoices"].snapshots) == 1

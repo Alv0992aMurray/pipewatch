@@ -17,6 +17,13 @@ class ScoringWeights:
         total = self.success_rate + self.throughput + self.error_rate
         if abs(total - 1.0) > 1e-6:
             raise ValueError(f"Weights must sum to 1.0, got {total:.4f}")
+        for name, value in [
+            ("success_rate", self.success_rate),
+            ("throughput", self.throughput),
+            ("error_rate", self.error_rate),
+        ]:
+            if value < 0:
+                raise ValueError(f"Weight '{name}' must be non-negative, got {value}")
 
 
 @dataclass

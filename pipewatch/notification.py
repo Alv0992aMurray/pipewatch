@@ -55,3 +55,21 @@ def route_alerts(
             a for a in alerts if channel.accepts(a)
         ]
     return result
+
+
+def summarize_result(result: NotificationResult) -> str:
+    """Return a human-readable summary of a :class:`NotificationResult`.
+
+    Example output::
+
+        Routed 5 alert(s) across 2 channel(s): ops-critical (3), ops-warning (2)
+    """
+    active = result.channels_with_alerts()
+    channel_counts = ", ".join(
+        f"{ch} ({len(result.routed[ch])})" for ch in active
+    )
+    return (
+        f"Routed {result.total_routed()} alert(s) across "
+        f"{len(active)} channel(s)"
+        + (f": {channel_counts}" if active else "")
+    )

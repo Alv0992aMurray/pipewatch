@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from typing import List
 
-from pipewatch.watemark import WatermarkEntry, WatermarkResult
+from pipewatch.watermark import WatermarkEntry, WatermarkResult
 
 
 def format_watermark_entry(entry: WatermarkEntry) -> str:

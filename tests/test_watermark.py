@@ -1,10 +1,10 @@
-"""Tests for pipewatch.watemark and pipewatch.watermark_reporter."""
+"""Tests for pipewatch.watermark and pipewatch.watermark_reporter."""
 from datetime import datetime, timezone
 
 import pytest
 
 from pipewatch.history import MetricSnapshot
-from pipewatch.watemark import WatermarkEntry, WatermarkResult, compute_watermarks
+from pipewatch.watermark import WatermarkEntry, WatermarkResult, compute_watermarks
 from pipewatch.watermark_reporter import (
     format_watermark_entry,
     format_watermark_report,
